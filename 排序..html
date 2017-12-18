@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <style>
+
+    </style>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="box">
+<button @click='click("id")'>id</button>
+<button @click='click("yw")'>yw</button>
+<button @click='click("sx")'>sx</button>
+<button @click='click("name")'>name</button>
+<button @click='click1("ip")'>ip</button>
+          <ul v-for="item in msg">
+            <li>id:{{item.name}}</li>
+            <li>id:{{item.id}}</li>
+            <li>yw:{{item.yw}}</li>
+            <li>sx:{{item.sx}}</li>
+            <li>ip:{{item.ip}}</li>
+          </ul>
+    </div>
+</body>
+<script>
+    new Vue({
+        el:'#box',
+        data() {
+            return {
+                msg:[
+                    {name:'张三',id:1,yw:'96',sx:'98',ip:'192.168.0.100'},
+                    {name:'李四',id:3,yw:'93',sx:'61',ip:'192.168.0.15'},
+                    {name:'王五',id:4,yw:'87',sx:'9',ip:'192.168.0.220'},
+                    {name:'赵六',id:2,yw:'55',sx:'66',ip:'192.168.0.80'}
+                ],
+                f:true
+            }
+        },
+        methods: {
+            click1(a){
+                this.f=!this.f
+                var o=this.f?1:-1
+                let compare = (item1, item2) => {
+                    var n1=item1[a].split('.').map(x => parseInt(x))
+                    var n2=item2[a].split('.').map(x => parseInt(x))
+                    for (let i = 0; i <4; i++) {
+                        if(n1[i] === n2[i]) {
+                            continue
+                        } else {
+                            if(o<0) {return n1[i] > n2[i]?1:-1}
+                            return n1[i] < n2[i]?1:-1
+                        }
+                    }
+                }
+                return this.msg.sort(compare)
+            },
+            click(a){
+                this.f=!this.f
+                var o=this.f?1:-1
+                this.sortBy(this.msg,a,o)
+            },
+            sortBy:function(n,field,order){
+                let compare = (item1, item2) => {
+                    if(/[\u4E00-\u9FA5]/g.test(item1[field])){
+                        return (item1[field]).localeCompare(item2[field])
+                    }else if(/^[0-9]+$/g.test(item1[field])&&/^[0-9]+$/g.test(item2[field])){
+                        return parseInt(item1[field]) < parseInt(item2[field])?1:-1
+                    }else{
+                        return item1[field] < item2[field]?1:-1
+                    }
+                }
+                if (order < 0) {
+                    compare = (item1, item2) => {
+                        if(/[\u4E00-\u9FA5]/g.test(item1[field])){
+                            return (item2[field]).localeCompare(item1[field])
+                        }else if(/^[0-9]+$/g.test(item1[field])&&/^[0-9]+$/g.test(item2[field])){
+                            return parseInt(item2[field]) < parseInt(item1[field])?1:-1
+                        }else{
+                            return item2[field] < item1[field]?1:-1
+                        }
+                    }
+                }
+                return n.sort(compare)
+            }
+        }
+    })
+    </script>
+</html>
